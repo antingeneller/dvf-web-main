@@ -1,2 +1,2 @@
 # dvf-web-main
-Datavetenskapsforeningen Web
+Datavetenskapsforeningen website source code
