@@ -1,0 +1,463 @@
+/* ==========================================================================
+   Datavetenskapsföreningen — site stylesheet
+   A refined Y2K look in layered shades of purple.
+
+   Contents
+     1. Colours & settings
+     2. Fonts
+     3. Basics
+     4. Page layout
+     5. Header & scrolling text
+     6. Sidebar navigation
+     7. Panels
+     8. Welcome panel
+     9. Lists (events / updates)
+    10. Contact page
+    11. Footer
+    12. Small screens & reduced motion
+   ========================================================================== */
+
+
+/* 1. Colours & settings
+   ------------------------------------------------------------------------ */
+
+:root {
+  /* Backgrounds, darkest to lightest */
+  --site-bg:            oklch(0.135 0.025 315);
+  --site-footer:        oklch(0.17  0.028 315);
+  --site-navbar:        oklch(0.20  0.04  315);
+  --site-sidebar:       oklch(0.215 0.045 315);
+  --site-main:          oklch(0.28  0.065 315);
+
+  /* Panel surfaces */
+  --site-recess:          oklch(0.145 0.026 310 / 88%);
+  --site-panel:           oklch(0.19  0.035 315 / 96%);
+  --site-panel-raised:    oklch(0.245 0.048 310 / 97%);
+  --site-panel-highlight: oklch(0.31  0.065 315 / 60%);
+
+  /* Text */
+  --site-text:         oklch(0.91 0.025 310);  /* normal text        */
+  --site-navbar-text:  oklch(0.73 0.07  310);  /* muted text         */
+  --site-navbar-hover: oklch(0.94 0.055 320);  /* text on hover      */
+  --site-accent:       oklch(0.81 0.115 315);  /* links & highlights */
+
+  /* Lines, glows and shadows */
+  --site-border:      oklch(0.61 0.09 315 / 60%);
+  --site-border-soft: oklch(0.9  0.06 310 / 26%);
+  --site-glow:        oklch(0.66 0.16 315 / 12%);
+  --site-shadow:      oklch(0.08 0.02 315 / 65%);
+
+  /* Shown if the header picture fails to load */
+  --site-header-fallback: oklch(0.40 0.19 320);
+
+  /* Shades used for the glossy bars */
+  --site-link-light:  oklch(0.345 0.067 315);
+  --site-link-mid:    oklch(0.285 0.058 315);
+  --site-link-edge:   oklch(0.225 0.047 315);
+  --site-link-base:   oklch(0.19  0.037 315);
+  --site-title-light: oklch(0.40  0.08  315);
+  --site-title-base:  oklch(0.27  0.06  315);
+
+  /* Gradients built from the shades above */
+  --site-gradient-link:  linear-gradient(var(--site-link-light) 0%, var(--site-link-mid) 48%,
+                                         var(--site-link-edge) 50%, var(--site-link-base) 100%);
+  --site-gradient-title: linear-gradient(var(--site-title-light), var(--site-title-base));
+  --site-gradient-panel: linear-gradient(135deg, var(--site-panel-highlight), transparent 65%);
+
+  /* Pictures */
+  --site-bg-image:     url("assets/background2.jpg");
+  --site-header-image: url("assets/header2.jpg");
+
+  /* Shape & type */
+  --site-radius:     4px;
+  --site-font:       "MS UI Gothic", "MS UI Gothic W", "Times New Roman", Times, serif;
+  --site-serif:      "Times New Roman", Times, serif;
+  --site-title-font: "Tangerine", "Times New Roman", serif;
+}
+
+
+/* 2. Fonts
+   ------------------------------------------------------------------------ */
+
+@font-face {
+  font-family: Tangerine;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/tangerine-400.woff2");
+}
+
+@font-face {
+  font-family: Tangerine;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/tangerine-700.woff2");
+}
+
+
+/* 3. Basics
+   ------------------------------------------------------------------------ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--site-font);
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-size: inherit;
+  font-weight: normal;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.25s;
+}
+
+a:hover {
+  color: var(--site-navbar-hover);
+  transition: color 0.1s;
+}
+
+hr {
+  border: none;
+  border-bottom: 1px dashed var(--site-border);
+  margin: 4px 8px;
+}
+
+i {
+  color: var(--site-navbar-text);
+}
+
+strong {
+  color: var(--site-accent);
+  font-weight: normal;
+}
+
+::selection {
+  background: var(--site-glow);
+  color: var(--site-text);
+}
+
+
+/* 4. Page layout
+   ------------------------------------------------------------------------ */
+
+.site-root {
+  min-height: 100vh;
+  padding: 0 8px 4vh;
+  font-size: 13px;
+  color: var(--site-text);
+  background: var(--site-bg) var(--site-bg-image) center / cover fixed no-repeat;
+}
+
+.site-container {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Sidebar on the left, panels on the right */
+.site-content {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 5px;
+}
+
+.site-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+/* The shared glossy frame around every box */
+.site-header,
+.panel,
+.nav-box,
+.nav-info,
+.site-footer {
+  border: 1px solid var(--site-border);
+  border-radius: var(--site-radius);
+  box-shadow:
+    inset 0  1px 0 var(--site-border-soft),
+    inset 0 -1px 0 var(--site-shadow),
+    0 0 0 1px var(--site-glow),
+    0 3px 12px var(--site-shadow);
+}
+
+
+/* 5. Header & scrolling text
+   ------------------------------------------------------------------------ */
+
+.site-header {
+  position: relative;
+  overflow: hidden;
+  height: 134px;
+  background: var(--site-header-fallback) var(--site-header-image) center / cover no-repeat;
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* The strip has no fill of its own: the text sits straight on the photo.
+   To stay readable over the bright sky, each letter carries a thin dark
+   outline (four offsets) plus a soft glow. */
+.site-marquee-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+.site-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: var(--site-serif);
+  font-style: italic;
+  text-shadow:
+    -1px -1px 0 var(--site-bg),
+     1px -1px 0 var(--site-bg),
+    -1px  1px 0 var(--site-bg),
+     1px  1px 0 var(--site-bg),
+     0 0 6px var(--site-bg),
+     0 0 14px var(--site-shadow);
+  animation: site-scroll 40s linear infinite;
+}
+
+@keyframes site-scroll {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(-100%); }
+}
+
+
+/* 6. Sidebar navigation
+   ------------------------------------------------------------------------ */
+
+.site-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.nav-box {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.nav-gif-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 3px;
+  background: var(--site-sidebar);
+  border-bottom: 1px solid var(--site-border);
+}
+
+.nav-gif {
+  display: block;
+  width: 140px;
+  height: 62px;
+  object-fit: cover;
+}
+
+/* Section headings: "navigation", "links" */
+.nav-label {
+  height: 20px;
+  padding: 1px 5px;
+  font-family: var(--site-serif);
+  color: var(--site-text);
+  background: var(--site-gradient-title);
+  text-shadow: 0 1px 1px var(--site-shadow);
+  box-shadow: inset 0 1px 0 var(--site-border-soft);
+  border-bottom: 1px solid var(--site-border);
+}
+
+.nav-link {
+  display: flex;
+  min-height: 28px;
+  padding: 4px 4px 4px 10px;
+  font-size: 14px;
+  background: var(--site-gradient-link);
+  box-shadow: inset 0 1px 0 var(--site-border-soft);
+  border-bottom: 1px solid var(--site-border);
+  transition: filter 0.2s;
+}
+
+.nav-link:last-child {
+  border-bottom: none;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--site-text);
+  filter: brightness(125%);
+}
+
+.nav-link:focus-visible {
+  outline: 1px solid var(--site-accent);
+  outline-offset: -3px;
+}
+
+/* Small "Updated / Status" box under the menu */
+.nav-info {
+  padding: 3px 6px;
+  background: var(--site-sidebar);
+}
+
+.nav-info p {
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+
+/* 7. Panels
+   ------------------------------------------------------------------------ */
+
+.panel {
+  overflow: hidden;
+  background: var(--site-panel);
+}
+
+.panel-title {
+  padding: 3px 8px;
+  color: var(--site-text);
+  background: var(--site-gradient-title);
+  text-shadow: 0 1px 1px var(--site-shadow);
+  box-shadow: inset 0 1px 0 var(--site-border-soft);
+  border-bottom: 1px solid var(--site-border);
+}
+
+.panel-body {
+  padding: 4px 10px 8px;
+}
+
+.panel-body p {
+  margin: 0.8em 0;
+  line-height: 1.35;
+}
+
+.panel-body a {
+  color: var(--site-accent);
+  text-decoration: underline dotted;
+}
+
+
+/* 8. Welcome panel
+   ------------------------------------------------------------------------ */
+
+.welcome-panel {
+  background: var(--site-gradient-panel), var(--site-panel-raised);
+}
+
+.welcome-title {
+  padding: 10px 76px 0;
+  text-align: center;
+  font-size: 18px;
+  color: var(--site-navbar-hover);
+}
+
+.welcome-body {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.welcome-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.welcome-text p:first-child {
+  margin-top: 4px;
+}
+
+.welcome-picture {
+  padding-top: 8px;
+}
+
+.welcome-picture img {
+  display: block;
+  border: 1px solid var(--site-border);
+  border-radius: 3px;
+  image-rendering: pixelated;
+  box-shadow: 0 0 6px var(--site-glow);
+}
+
+
+/* 9. Lists (events / updates)
+   ------------------------------------------------------------------------ */
+
+.log {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.log li {
+  padding: 3px 6px;
+  background: var(--site-recess);
+  border: 1px solid var(--site-border-soft);
+  border-radius: 2px;
+  box-shadow: inset 0 1px 2px var(--site-shadow);
+}
+
+/* Every other row a slightly different shade */
+.log li:nth-child(even) {
+  background: var(--site-navbar);
+}
+
+
+/* 10. Contact page
+   ------------------------------------------------------------------------ */
+
+.message-page-title {
+  margin: 4px 0 8px;
+  text-align: center;
+  font-family: var(--site-title-font);
+  font-style: italic;
+  font-size: 36px;
+  font-weight: normal;
+  line-height: 1.2;
+  text-shadow: 1px 1px 0 var(--site-bg), 0 1px 3px var(--site-glow);
+}
+
+
+/* 11. Footer
+   ------------------------------------------------------------------------ */
+
+.site-footer {
+  padding: 4px;
+  text-align: center;
+  font-size: 10px;
+  color: var(--site-navbar-text);
+  background: var(--site-footer);
+}
+
+
+/* 12. Small screens & reduced motion
+   ------------------------------------------------------------------------ */
+
+@media (max-width: 520px) {
+  .site-content { grid-template-columns: 1fr; }
+  .site-header  { height: 90px; }
+  .welcome-body { flex-direction: column; align-items: center; }
+  .welcome-text { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-marquee { animation: none; }
+  .nav-link     { transition: none; }
+}
